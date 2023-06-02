@@ -1,0 +1,44 @@
+<!DOCTYPE type="text/html" html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="/bootstrap-5.0.2.min.css">
+    <link type="text/css" rel="stylesheet" href="/style.css">
+</head>
+<body>
+    {{>header}}
+    <div class="container mt-12" style="min-height: 515px;">
+        <div style="height: 20px;"></div>
+        {{#if message}}
+            <div style="text-align: center;" class="alert alert-{{message.type}}">
+                <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle" aria-label="btn-close" data-bs-dismiss="alert"></button>
+                <strong>{{message.title}}</strong>{{message.message}}
+            </div>
+        {{/if}}
+        <div class="container" style="text-align: center;">
+            <div class="col-8-center">
+                <div class="card text-center">                    
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <p class="card-text"><br>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/enable-cookie';">Enable Cookie</button><br><br>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/logout';">Disble Cookie</button>
+                            <br><br>
+                            <h5>id: </h5>{{user.id}}<br>
+                            <h5>email:  </h5>{{user.email}}<br>
+                            <h5>first_name:  </h5>{{user.first_name}}<br>
+                            <h5>last_name:  </h5>{{user.last_name}}<br>
+                        </p>
+                    </div>
+                    <div class="card-footer text-muted"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{>footer}}
+    <script type="text/javascript" src="/bootstrap-5.0.2.min.js"></script>
+</body>
+</html>

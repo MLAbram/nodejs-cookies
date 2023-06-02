@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-cookies",
+  "version": "1.0.0",
+  "description": "A demo of how to use cookies within Node.JS and allocate permission to specific handlebars pages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js -e js,mjs,json,hbs,css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.1.3",
+    "express": "^4.18.2",
+    "hbs": "^4.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "nodemon": "^2.0.22",
+    "util": "^0.12.5"
+  }
+}
