@@ -21,8 +21,6 @@ app.use(cookieParser())
 app.use('/', v1_hbs)
 app.use('/api/v1', v1_api)
 
-
-
 app.listen(3000, () => {
   console.log('Server listening on port: 3000.')
 })

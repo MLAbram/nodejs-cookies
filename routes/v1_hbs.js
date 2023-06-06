@@ -1,18 +1,7 @@
 const express = require('express')
 const app = express()
-// const hbs = require('hbs')
-// const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const cookieAuth = require('./cookie')
-
-// app.set('view engine', 'hbs')
-
-// app.use(express.static(process.cwd() + '/html'))
-// app.use(express.urlencoded({extended:false}))
-// app.use(bodyParser.urlencoded({extended: false}))
-// app.use(bodyParser.json())
-
-// hbs.registerPartials(process.cwd() + '/views')
 
 app.get('/', cookieAuth.validate, (req, res) => {
     if (!req.user) {
