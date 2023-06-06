@@ -1,112 +1,88 @@
 const express = require('express')
 const app = express()
-const hbs = require('hbs')
-const bodyParser = require('body-parser')
-const cookieJwtAuth = require('./cookie')
+// const hbs = require('hbs')
+// const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
+const cookieAuth = require('./cookie')
 
-app.set('view engine', 'hbs')
+// app.set('view engine', 'hbs')
 
-app.use(express.static(process.cwd() + '/html'))
-app.use(express.urlencoded({extended:false}))
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
+// app.use(express.static(process.cwd() + '/html'))
+// app.use(express.urlencoded({extended:false}))
+// app.use(bodyParser.urlencoded({extended: false}))
+// app.use(bodyParser.json())
 
-hbs.registerPartials(process.cwd() + '/views')
+// hbs.registerPartials(process.cwd() + '/views')
 
-app.get('/', (req, res) => {
-    return res.status(200).render('index', {
-        navbar_title: 'Node.js Cookie Demo'
-    })
+app.get('/', cookieAuth.validate, (req, res) => {
+    if (!req.user) {
+        return res.status(200).render('index', {
+            navbar_title: 'Node.js Cookie Demo'
+        })
+    } else {
+        return res.status(200).render('index', {
+            navbar_title: 'Node.js Cookie Demo',
+            userInfo: req.user
+        })
+    }
 })
 
-app.get('/test-1', cookieJwtAuth.validateCookie, (req, res) => {
+app.get('/test-1', cookieAuth.validate, (req, res) => {
     return res.status(200).render('test-1', {
-        navbar_title: 'Node.js Cookie Demo | Test #1'
+        navbar_title: 'Node.js Cookie Demo | Test #1',
+        userInfo: req.user
     })
 })
 
-app.get('/test-2', cookieJwtAuth.validateCookie, (req, res) => {
+app.get('/test-2', cookieAuth.validate, (req, res) => {
     return res.status(200).render('test-2', {
-        navbar_title: 'Node.js Cookie Demo | Test #2'
+        navbar_title: 'Node.js Cookie Demo | Test #2',
+        userInfo: req.user
     })
 })
 
-app.get('/profile', cookieJwtAuth.validateCookie, (req, res) => {
+app.get('/profile', cookieAuth.validate, (req, res) => {
     return res.status(200).render('profile', {
         navbar_title: 'Node.js Cookie Demo | Profile',
-        user: {
+        userInfo: req.user
+    })
+})
+
+app.get('/faq', cookieAuth.validate, (req, res) => {
+    return res.status(200).render('faq', {
+        navbar_title: 'Node.js Cookie Demo | FAQ',
+        userInfo: req.user
+    })
+})
+
+app.get('/enable-cookie', (req, res) => {
+    try {
+        const userInfo = {
             id: '123456',
             email: 'jd@email.com',
             first_name: 'Jon', 
             last_name: 'Doe'  
         }
-    })
-})
 
-app.get('/faq', cookieJwtAuth.validateCookie, (req, res) => {
-    return res.status(200).render('faq', {
-        navbar_title: 'Node.js Cookie Demo | FAQ'
-    })
-})
+        const token = jwt.sign(userInfo, process.env.SALT_TOKEN, { expiresIn: '1h' })
 
-app.get('/enable-cookie', (req, res) => {
-    const user = {
-        id: '123456',
-        email: 'jd@email.com',
-        first_name: 'Jon', 
-        last_name: 'Doe'  
+        res.cookie('myCookie', token, {
+            maxAge: 900000, // 15 minutes
+            secure: true,
+            httpOnly: true
+        }).render('index', {
+            navbar_title: 'Node.js Cookie Demo',
+            userInfo: userInfo
+        })
+    } catch (err) {
+        console.log(err)
     }
-
-    const token = jwt.sign(user, process.env.SALT_TOKEN, { expiresIn: '15m'})
-
-    res.cookie('myCookie', token, {
-        httpOnly: true,
-        secure: true,
-        signed: true
-    })
-
-    return res.status(200).render('index', {
-        navbar_title: 'Node.js Cookie Demo',
-        user: user
-    })
-
-    // // create token; https://jwt.io/
-    // const token = jwt.sign ({
-    //     id: '123456',
-    //     email: 'jd@email.com',
-    //     first_name: 'Jon', 
-    //     last_name: 'Doe'                                
-    // }, 
-    //     process.env.SALT_TOKEN, 
-    // {
-    //     expiresIn: process.env.SALT_EXPIRE
-    // })
-
-    // // set token to cookie
-    // const cookieToken = {
-    //     expires: new Date(
-    //         Date.now() + process.env.COOKIE_EXPIRE * 43200000
-    //     ),
-    //         httpOnly: true
-    // }
-
-    // res.cookie('myCookie', token, cookieToken, {
-    //     httpOnly: true
-    // })
-
-    // return res.status(200).render('index', {
-    //     cookie_active: true,
-    //     navbar_title: 'Node.js Cookie Demo',
-    //     user: {
-    //         id: '123456',
-    //         email: 'jd@email.com',
-    //         first_name: 'Jon', 
-    //         last_name: 'Doe'                                
-    //     }
-    // })
 })
 
-app.get('/logout', cookieJwtAuth.disableCookie)
+app.get('/logout', cookieAuth.expire, (req, res) => {
+    return res.status(200).render('index', {
+        navbar_title: 'Node.js Cookie Demo'
+    })
+})
 
 module.exports = app
