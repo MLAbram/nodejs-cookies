@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
-const { promisify } = require('util')
+// const { promisify } = require('util')
 
-exports.validate = async (req, res, next) => {
+exports.validate = async(req, res, next) => {
     if (req.cookies.myCookie) {
         try {
             const decoded = jwt.verify(req.cookies.myCookie, process.env.SALT_TOKEN)
@@ -11,7 +11,8 @@ exports.validate = async (req, res, next) => {
             console.log('Error: ' + err)
         }
     } else {
-        next()
+        res.clearCookie('myCookie')
+        return res.status(400).json({Message: 'Access Denied'})
     }    
 }
 
