@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-// const { promisify } = require('util')
 
 exports.validate = async(req, res, next) => {
     if (req.cookies.myCookie) {
